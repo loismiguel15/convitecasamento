@@ -11,7 +11,6 @@ import PixModal from './components/PixModal'
 import { Heading, Reveal } from './components/UI'
 import Admin from './pages/Admin'
 
-const photos = ['photo-1519741497674-611481863552', 'photo-1519225421980-715cb0215aed', 'photo-1464366400600-7168b8af9bc3', 'photo-1511285560929-80b456fea0bc', 'photo-1523438885200-e635ba2c371e', 'photo-1544078751-58fee2d8a03b']
 const initialRsvp = { name: '', phone: '', attending: 'yes', companions: 0, companion_names: '', notes: '', message: '' }
 
 function Invitation() {
@@ -21,6 +20,7 @@ function Invitation() {
   const [selectedGift, setSelectedGift] = useState(null)
   const [gifts, setGifts] = useState([])
   const [messages, setMessages] = useState([])
+  const [gallery, setGallery] = useState([])
   const [settings, setSettings] = useState(null)
   const [rsvp, setRsvp] = useState(initialRsvp)
   const [message, setMessage] = useState({ name: '', message: '' })
@@ -48,6 +48,7 @@ function Invitation() {
   const load = () => {
     api('/gifts').then(setGifts).catch(() => {})
     api('/messages').then(setMessages).catch(() => {})
+    api('/gallery').then(setGallery).catch(() => {})
     api('/settings').then(setSettings).catch(() => {})
   }
   useEffect(load, [])
@@ -127,8 +128,8 @@ function Invitation() {
 
       <section id="galeria" className="bg-cream px-5 py-24"><div className="mx-auto max-w-6xl">
         <Heading eyebrow="Memórias que guardamos">Galeria</Heading>
-        <div className="columns-2 gap-3 md:columns-3">{photos.map((photo, index) => { const src = `https://images.unsplash.com/${photo}?auto=format&fit=crop&w=900&q=85`; return <button className="mb-3 block w-full overflow-hidden" onClick={() => setLightbox(src)} key={photo}><img loading="lazy" className={`w-full object-cover transition hover:scale-105 ${index % 3 === 1 ? 'h-80' : 'h-56 md:h-72'}`} src={src} alt="Inspiração romântica" /></button> })}</div>
-        <p className="mt-8 text-center text-xs text-stone-400">As fotos podem ser substituídas por momentos reais do casal em <code>frontend/public/images</code>.</p>
+        <div className="columns-2 gap-3 md:columns-3">{gallery.map((photo, index) => <button className="mb-3 block w-full overflow-hidden" onClick={() => setLightbox(photo.image_url)} key={photo.id}><img loading="lazy" className={`w-full object-cover transition hover:scale-105 ${index % 3 === 1 ? 'h-80' : 'h-56 md:h-72'}`} src={photo.image_url} alt={photo.caption || 'Foto de Loís e Giovanna'} /></button>)}</div>
+        {!gallery.length && <p className="text-center text-sm text-stone-500">As fotos serão adicionadas em breve.</p>}
       </div></section>
       {lightbox && <div onClick={() => setLightbox(null)} className="fixed inset-0 z-[90] grid place-items-center bg-black/90 p-6"><button className="absolute right-6 top-6 text-white"><X /></button><img className="max-h-[90vh]" src={lightbox} alt="Foto ampliada" /></div>}
 

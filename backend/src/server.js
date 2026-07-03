@@ -1,9 +1,10 @@
 import express from 'express'
 import cors from 'cors'
 import crypto from 'crypto'
-import db from './db.js'
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
+import multer from 'multer'
+import db, { dataDir } from './db.js'
+import { existsSync, readFileSync, mkdirSync } from 'fs'
+import { resolve, join, extname } from 'path'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -12,6 +13,19 @@ const SESSION_SECRET = process.env.SESSION_SECRET || `${ADMIN_PASSWORD}-lois-gio
 
 app.use(cors())
 app.use(express.json({ limit: '200kb' }))
+
+const uploadsDir = join(dataDir, 'uploads')
+mkdirSync(uploadsDir, { recursive: true })
+app.use('/uploads', express.static(uploadsDir))
+const allowedImages = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: uploadsDir,
+    filename: (req, file, done) => done(null, `${crypto.randomUUID()}${extname(file.originalname).toLowerCase() || '.jpg'}`)
+  }),
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: (req, file, done) => allowedImages.has(file.mimetype) ? done(null, true) : done(new Error('Formato de imagem não permitido.'))
+})
 
 const cleanPhone = value => String(value || '').replace(/\D/g, '')
 const sign = value => crypto.createHmac('sha256', SESSION_SECRET).update(value).digest('base64url')
@@ -34,6 +48,10 @@ const auth = (req, res, next) => {
 app.post('/api/admin/login', (req, res) => {
   if (req.body.password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Senha administrativa inválida.' })
   res.json({ token: createToken(), expires_in: 28800 })
+})
+app.post('/api/upload', auth, upload.single('image'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Selecione uma imagem.' })
+  res.status(201).json({ url: `/uploads/${req.file.filename}` })
 })
 
 app.post('/api/rsvp', (req, res) => {
@@ -86,6 +104,21 @@ app.delete('/api/gifts/:id', auth, (req, res) => {
   res.status(204).end()
 })
 
+app.get('/api/gallery', (req, res) => res.json(db.prepare('SELECT * FROM gallery ORDER BY sort_order,id').all()))
+app.post('/api/gallery', auth, (req, res) => {
+  if (!req.body.image_url) return res.status(400).json({ error: 'Selecione uma imagem.' })
+  const result = db.prepare('INSERT INTO gallery(image_url,caption,sort_order) VALUES(?,?,?)').run(req.body.image_url, req.body.caption || '', Number(req.body.sort_order) || 0)
+  res.status(201).json({ id: result.lastInsertRowid })
+})
+app.put('/api/gallery/:id', auth, (req, res) => {
+  db.prepare('UPDATE gallery SET image_url=?,caption=?,sort_order=? WHERE id=?').run(req.body.image_url, req.body.caption || '', Number(req.body.sort_order) || 0, req.params.id)
+  res.json({ ok: true })
+})
+app.delete('/api/gallery/:id', auth, (req, res) => {
+  db.prepare('DELETE FROM gallery WHERE id=?').run(req.params.id)
+  res.status(204).end()
+})
+
 app.get('/api/settings', (req, res) => res.json(db.prepare('SELECT * FROM wedding_settings WHERE id=1').get()))
 app.put('/api/settings', auth, (req, res) => {
   const x = req.body
@@ -112,4 +145,9 @@ if (existsSync(dist)) {
     res.type('html').send(html)
   })
 }
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'A imagem deve ter no máximo 8 MB.' })
+  if (error) return res.status(400).json({ error: error.message || 'Não foi possível processar o arquivo.' })
+  next()
+})
 app.listen(PORT, () => console.log(`API em http://localhost:${PORT}`))

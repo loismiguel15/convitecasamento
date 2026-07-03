@@ -22,15 +22,17 @@ export default function Opening({ show, onOpen }) {
         <div className="absolute inset-y-0 right-0 w-1/2 bg-[#f3eadc] [clip-path:polygon(100%_0,0_50%,100%_100%)]" />
         <div className="absolute inset-x-0 top-0 h-[54%] bg-[#e4d5bd] [clip-path:polygon(0_0,100%_0,50%_100%)]" />
 
-        <motion.div
-          animate={{ scale: [1, 1.045, 1] }}
-          transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
-          className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-olive font-display italic text-white shadow-lg ring-[5px] ring-[#d9c49e]/70 sm:h-24 sm:w-24"
-        >
-          <span className="text-2xl sm:text-3xl">L</span>
-          <span className="mx-1.5 text-xl text-gold sm:text-2xl">&</span>
-          <span className="text-2xl sm:text-3xl">G</span>
-        </motion.div>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <motion.div
+            animate={{ scale: [1, 1.045, 1] }}
+            transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+            className="flex h-20 w-20 items-center justify-center rounded-full bg-olive font-display italic text-white shadow-lg ring-[5px] ring-[#d9c49e]/70 sm:h-24 sm:w-24"
+          >
+            <span className="text-2xl sm:text-3xl">L</span>
+            <span className="mx-1.5 text-xl text-gold sm:text-2xl">&</span>
+            <span className="text-2xl sm:text-3xl">G</span>
+          </motion.div>
+        </div>
 
         <span className="absolute inset-x-0 bottom-5 text-[8px] uppercase tracking-[.3em] text-olive/60 sm:bottom-7 sm:text-[9px] sm:tracking-[.35em]">
           Toque para abrir

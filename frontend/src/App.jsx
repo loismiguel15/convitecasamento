@@ -135,8 +135,18 @@ function Invitation() {
       <section id="presentes" className="px-5 py-24"><div className="mx-auto max-w-6xl">
         <Heading eyebrow="Seu carinho é o melhor presente">Lista de presentes</Heading>
         <p className="mx-auto mb-10 max-w-xl text-center text-sm leading-7 text-stone-500">Sua presença é o mais importante. Se desejar nos presentear, escolha uma lembrança e utilize o QR Code PIX.</p>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{gifts.map(gift =>
-          <Reveal className="card overflow-hidden" key={gift.id}><img loading="lazy" className="h-52 w-full object-cover" src={gift.image_url} alt={gift.name} /><div className="p-6"><Gift className="text-gold" /><h3 className="mt-3 font-display text-2xl text-olive">{gift.name}</h3><p className="my-4 text-sm text-gold">{Number(gift.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p><button onClick={() => setSelectedGift(gift)} className="btn w-full">Presentear</button></div></Reveal>)}</div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {gifts.map(gift =>
+            <Reveal className="card overflow-hidden" key={gift.id}><img loading="lazy" className="h-52 w-full object-cover" src={gift.image_url} alt={gift.name} /><div className="p-6"><Gift className="text-gold" /><h3 className="mt-3 font-display text-2xl text-olive">{gift.name}</h3><p className="my-4 text-sm text-gold">{Number(gift.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p><button onClick={() => setSelectedGift(gift)} className="btn w-full">Presentear</button></div></Reveal>)}
+          <Reveal className="card overflow-hidden">
+            <div className="relative flex h-52 items-center justify-center overflow-hidden bg-olive">
+              <img src="/images/hero-wedding.png" alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />
+              <div className="absolute inset-0 bg-gradient-to-br from-olive/30 to-olive/90" />
+              <div className="relative grid h-20 w-20 place-items-center rounded-full border border-gold/50 bg-olive/70 text-gold backdrop-blur"><Heart size={32} /></div>
+            </div>
+            <div className="p-6"><Gift className="text-gold" /><h3 className="mt-3 font-display text-2xl text-olive">Presente livre</h3><p className="my-4 text-sm text-gold">Você escolhe o valor</p><button onClick={() => setSelectedGift({ name: 'Presente livre', price: 0, custom: true })} className="btn w-full">Doar qualquer valor</button></div>
+          </Reveal>
+        </div>
       </div></section>
       <PixModal gift={selectedGift} pixKey={S.pix} onClose={() => setSelectedGift(null)} />
 

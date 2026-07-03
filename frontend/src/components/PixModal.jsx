@@ -34,7 +34,7 @@ export default function PixModal({ gift, pixKey, onClose }) {
   const [copied, setCopied] = useState(false)
   const [amount, setAmount] = useState('')
   useEffect(() => {
-    if (gift) setAmount(Number(gift.price).toFixed(2).replace('.', ','))
+    if (gift) setAmount(gift.custom ? '' : Number(gift.price).toFixed(2).replace('.', ','))
   }, [gift])
   if (!gift) return null
   const rawAmount = String(amount)
@@ -49,7 +49,7 @@ export default function PixModal({ gift, pixKey, onClose }) {
       <button onClick={onClose} className="absolute right-4 top-4 text-stone-500" aria-label="Fechar"><X /></button>
       <p className="text-[10px] uppercase tracking-[.3em] text-gold">Presente escolhido</p>
       <h3 className="mt-2 font-display text-4xl text-olive">{gift.name}</h3>
-      <p className="mt-1 text-xs text-stone-500">Valor sugerido: {Number(gift.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+      <p className="mt-1 text-xs text-stone-500">{gift.custom ? 'Escolha livremente o valor do seu presente' : <>Valor sugerido: {Number(gift.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</>}</p>
       <label className="mx-auto mb-5 mt-4 block max-w-[220px] text-left text-[9px] uppercase tracking-[.2em] text-stone-500">
         Valor que deseja enviar
         <span className="mt-2 flex items-center rounded-lg border border-gold/30 bg-cream px-4 focus-within:border-gold">

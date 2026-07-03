@@ -74,6 +74,13 @@ function Invitation() {
     else audio.current.play().catch(() => alert('Adicione um arquivo de música válido no painel.'))
     setPlaying(!playing)
   }
+  const openInvitation = () => {
+    sessionStorage.opened = '1'
+    setOpening(false)
+    if (S.music && audio.current) {
+      audio.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
+    }
+  }
   const share = async () => {
     const data = { title: `${S.groom} & ${S.bride}`, text: `Você está convidado para o nosso casamento em ${S.dateLong}!`, url: location.href }
     if (navigator.share) await navigator.share(data)
@@ -81,7 +88,7 @@ function Invitation() {
   }
 
   return <>
-    <Opening show={opening} onOpen={() => { sessionStorage.opened = '1'; setOpening(false) }} />
+    <Opening show={opening} onOpen={openInvitation} />
     <Nav />
     <main>
       <section id="inicio" className="relative flex min-h-[100svh] items-start justify-center overflow-hidden bg-olive px-5 pb-14 pt-28 text-center text-white sm:items-center sm:py-28">

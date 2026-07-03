@@ -1,0 +1,3 @@
+import{motion}from'framer-motion';
+export const Reveal=({children,className=''})=><motion.div className={className} initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.1}} transition={{duration:.7}}>{children}</motion.div>;
+export const Heading=({children,eyebrow,light})=><div className="mb-10 text-center"><p className="mb-3 text-[10px] font-semibold uppercase tracking-[.38em] text-gold">{eyebrow}</p><h2 className={`font-display text-4xl md:text-6xl ${light?'text-white':'text-olive'}`}>{children}</h2><i className="mx-auto mt-5 block h-px w-16 bg-gold"/></div>;

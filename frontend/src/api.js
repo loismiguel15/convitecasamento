@@ -1,0 +1,1 @@
+export async function api(path,options={}){const r=await fetch('/api'+path,{...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});const d=r.headers.get('content-type')?.includes('json')?await r.json():await r.text();if(!r.ok)throw Error(d.error||'Não foi possível concluir.');return d}

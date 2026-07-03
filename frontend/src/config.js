@@ -1,0 +1,1 @@
+export const W={groom:'Loís Miguel',bride:'Giovanna Aparecida Leão',date:'2027-12-18T16:00:00-03:00',map:'https://maps.app.goo.gl/HyNrDxHXpMnfpaBaA',groomParents:'Luiz Carlos de Lima e Maria Aparecida Marins de Lima',brideParents:'Antônio Marcos Costa e Mônica Aparecida Leão',pix:'SUA-CHAVE-PIX-AQUI',music:'/music/nossa-musica.mp3'}

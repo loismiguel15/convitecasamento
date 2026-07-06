@@ -2,5 +2,6 @@ node_modules
 frontend/dist
 backend/data/*.db*
 backend/data/uploads/
+backend/uploads/
 .env
 *.log

@@ -44,7 +44,7 @@ function Invitation() {
     instagram: settings.instagram || '',
     music: settings.music_url || '',
     story: settings.story_intro || ''
-  } : { ...W, dateLong, time: '16:00', venue: 'Igreja Matriz', whatsapp: '5535999267340', instagram: '', story: '' }
+  } : { ...W, dateLong, time: '16:00', venue: 'Igreja Matriz', whatsapp: '5535999267340', instagram: '', music: '', story: '' }
 
   const load = () => {
     api('/gifts').then(setGifts).catch(() => {})
@@ -92,7 +92,7 @@ function Invitation() {
   const openInvitation = () => {
     sessionStorage.opened = '1'
     setOpening(false)
-    if (S.music && audio.current) {
+    if (settings && S.music && audio.current) {
       audio.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
     }
   }

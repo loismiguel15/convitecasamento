@@ -22,6 +22,7 @@ function Invitation() {
   const [messages, setMessages] = useState([])
   const [gallery, setGallery] = useState([])
   const [settings, setSettings] = useState(null)
+  const [musicSrc, setMusicSrc] = useState('')
   const [rsvp, setRsvp] = useState(initialRsvp)
   const [message, setMessage] = useState({ name: '', message: '' })
   const [notice, setNotice] = useState('')
@@ -52,6 +53,20 @@ function Invitation() {
     api('/settings').then(setSettings).catch(() => {})
   }
   useEffect(load, [])
+  useEffect(() => {
+    if (!S.music) {
+      setMusicSrc('')
+      return
+    }
+
+    const separator = S.music.includes('?') ? '&' : '?'
+    setMusicSrc(`${S.music}${separator}v=${Date.now()}`)
+    if (audio.current) {
+      audio.current.pause()
+      audio.current.load()
+      setPlaying(false)
+    }
+  }, [S.music])
 
   const sendRsvp = async e => {
     e.preventDefault()
@@ -191,7 +206,7 @@ function Invitation() {
         <button aria-label="Compartilhar convite" onClick={share}><Share2 /></button>
       </div>
     </footer>
-    <audio ref={audio} src={S.music} onEnded={() => setPlaying(false)} />
+    <audio ref={audio} src={musicSrc} preload="auto" onEnded={() => setPlaying(false)} />
     <button onClick={toggleMusic} title="Tocar ou pausar música" className={`fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full bg-gold text-white shadow-xl ${playing ? 'animate-pulse' : ''}`}>{playing ? <Pause /> : <Music2 />}</button>
   </>
 }
